@@ -1,13 +1,7 @@
-// import axios from 'axios';
-//
-// export const HTTP_token = axios.create({
-//     baseURL:'https://api-stage.etm-system.com/api',
-// });
-// export const HTTP_air = axios.create({
-//     baseURL:'https://api-stage.etm-system.com/api/air',
-//     headers: {
-//         Authorization: ''
-//     },
-// });
-
-export const app_id = `94cb849d0a`;
+import  axios from 'axios';
+export const BASEURL = 'https://api-stage.etm-system.com/api';
+export const BASEURLAIR = 'https://api-stage.etm-system.com/api/air';
+export const HTTP_AIR = axios.create({
+    baseURL:`${BASEURLAIR}`,
+});
+export const APPID = '94cb849d0a';

@@ -1,27 +1,42 @@
 <template>
     <div id="app">
         <!--<div>{{authApp.etm_auth_key}}</div>-->
-        <form autocomplete="off" @submit.prevent="" novalidate>
+        <form autocomplete="off" @submit.prevent="" novalidate
+              style="display: flex; flex-direction: column;align-items: stretch;
+        margin: 0 auto; width: 50%;">
             <label for="departure_code">departure_code</label>
-            <input type="text" name="departure_code" id="departure_code" v-model="this.initSearch.directions[0].departure_code">
+            <input type="text" name="departure_code" id="departure_code"
+                   v-model="this.initSearch.directions[0].departure_code">
             <label for="arrival_code">arrival_code</label>
-            <input type="text" name="arrival_code" id="arrival_code" v-model="this.initSearch.directions[0].arrival_code">
+            <input type="text" name="arrival_code" id="arrival_code"
+                   v-model="this.initSearch.directions[0].arrival_code">
             <label for="date">date</label>
-            <input type="date" name="date" id="date" v-model="this.initSearch.directions[0].date">
+            <input type="date" name="date" id="date"
+                   v-model="this.initSearch.directions[0].date">
             <label for="class">class</label>
-            <input type="text" name="class" id="class" v-model="this.initSearch.class">
+            <input type="text" name="class" id="class"
+                   v-model="this.initSearch.class">
             <button v-if="this.authApp.etm_auth_key" @click="postInitSearch">getInitSearch</button>
         </form>
+        <ul>
+            <li v-for="(offer, index) in offers.offers" :key="index">
+                    <img :src="offer.carrier_logo"
+                         alt="carrier logo" width="100">
+                <span>{{offer.carrier_name}}</span>
+                <detailOffer :offer="offer"/>
+            </li>
+        </ul>
     </div>
 </template>
 
 <script>
-    import {app_id} from './components/http-common';
+    import {APPID, BASEURL, HTTP_AIR} from './components/http-common';
     import axios from 'axios';
+    import DetailOffer from "./DetailOffer";
 
     export default {
         name: 'app',
-        components: {},
+        components: {DetailOffer},
         data() {
             return {
                 authApp: {
@@ -57,65 +72,129 @@
                         "NEG"
                     ]
                 },
-                searchRequest:{
+                searchRequest: {
                     "status": "ok",
                     "message": "Нет ошибок",
                     "request_id": 0
+                },
+                offers: {
+                    status: "inProcess",
+                    message: "Нет ошибок",
+                    is_round: true,
+                    is_multy: false,
+                    currency: "RUB",
+                    available_currencies: [
+                        "EUR",
+                        "RUB"
+                    ],
+                    sort: "price",
+                    directions: [
+                        {
+                            dir_number: 1,
+                            date: "2018-04-28",
+                            departure_code: "MOW",
+                            departure_name: "Москва",
+                            departure_country: "RU",
+                            arrival_code: "LED",
+                            arrival_name: "Санкт-Петербург",
+                            arrival_country: "RU"
+                        }
+                    ],
+                    offers: [
+                        {
+                            carrier_code: "SU",
+                            carrier_name: "Аэрофлот",
+                            carrier_logo: "https://crm.etm-system.com/images/airline/SU.png",
+                            min_price: 5320,
+                            offers: [
+                                {
+                                    min_price: 53200,
+                                    segments: [
+                                        {
+                                            segment_id: 881516214,
+                                            buy_id: "839493372_881516214",
+                                            dir_number: 1,
+                                            flight_number: "205",
+                                            flight_carrier_code: "SU",
+                                            flight_carrier_name: "Аэрофлот",
+                                            departure_airport: "VKO",
+                                            departure_timestamp: 1524888600,
+                                            arrival_airport: "LED",
+                                            arrival_timestamp: 1524888600,
+                                            duration_formated: "1 ч 20 мин",
+                                            duration_minutes: 80,
+                                            stops: 0,
+                                            flights_info: [
+                                                {
+                                                    date: "2018-04-28",
+                                                    departure_country: "RU",
+                                                    departure_city: "Москва",
+                                                    departure_airport: "VKO",
+                                                    departure_terminal: "string",
+                                                    departure_local_time: "08:20",
+                                                    departure_timezone: "GMT+03:00",
+                                                    arrival_country: "RU",
+                                                    arrival_city: "Санкт-Перебург",
+                                                    arrival_airport: "LED",
+                                                    arrival_terminal: "string",
+                                                    arrival_local_time: "09:40",
+                                                    arrival_timezone: "GMT+03:00",
+                                                    flight_number_print: "SU-205",
+                                                    duration_formated: "1 ч 20 мин",
+                                                    stop_time: "9 ч 40 мин"
+                                                }
+                                            ],
+                                            tarif: "NVUR",
+                                            class: "N",
+                                            price: 6975,
+                                            baggage: "1PC"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             }
         },
-        mounted(){
+        mounted() {
             this.getTokenApp()
         },
         methods: {
             getTokenApp: function () {
                 axios
-                    .get(`https://api-stage.etm-system.com/api/login/${app_id}`)
+                    .get(`${BASEURL}/login/${APPID}`)
                     .then(response => {
                         window.console.log(response);
                         this.authApp = response.data;
-                    })
-                    .catch(error => {
-                        window.console.log(error);
-                    })
-            }
-            ,
-            postInitSearch: function () {
-                const HTTP_air = axios.create({
-                    baseURL:'https://api-stage.etm-system.com/api/air',
-                    headers: {
-                        Authorization: this.authApp.etm_auth_key
-                    },
-                });
-                HTTP_air.post('/search', this.initSearch)
-                    .then(response=>{
-                        window.console.log(response);
-                        this.searchRequest = response.data;
+                        HTTP_AIR.defaults.headers.common['Authorization'] = this.authApp.etm_auth_key;
                     })
                     .catch(error => {
                         window.console.log(error);
                     })
             },
-            // postInitSearch: function () {
-            //     const HTTP_air = axios.create({
-            //         baseURL:'https://api-stage.etm-system.com/api/dictionaries/airports',
-            //         headers: {
-            //             Authorization: this.authApp.etm_auth_key
-            //         },
-            //     });
-            //     HTTP_air.get('')
-            //         .then(response=>{
-            //             window.console.log(response);
-            //             this.searchRequest = response.data;
-            //         })
-            //         .catch(error => {
-            //             window.console.log(error);
-            //         })
-            // }
+            postInitSearch: function () {
+                HTTP_AIR.post('/search', this.initSearch)
+                    .then(response => {
+                        window.console.log(response);
+                        this.searchRequest = response.data;
+                        this.getOffers()
+                    })
+                    .catch(error => {
+                        window.console.log(error);
+                    })
+            },
+            getOffers: function () {
+                HTTP_AIR.get(`/offers/${this.searchRequest.request_id}`)
+                    .then(response => {
+                        window.console.log(response);
+                        this.offers = response.data;
+                    })
+                    .catch(error => {
+                        window.console.log(error);
+                    })
+            },
         }
     }
 </script>
 
-<style>
-
-</style>
