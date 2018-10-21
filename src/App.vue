@@ -17,28 +17,18 @@
                    v-model="this.initSearch.class">
             <button v-if="this.authApp.etm_auth_key" @click="postInitSearch">getInitSearch</button>
         </form>
-        <ul>
-            <li v-for="(offer, index) in offers.offers" :key="index"
-            @click="displayDetails">
-                    <img :src="offer.carrier_logo"
-                         alt="carrier logo" width="100">
-                <span>{{offer.carrier_name}}</span>
-                <detailOffer v-bind:style="{display: display_details}" :offer="offer"/>
-            </li>
-        </ul>
+        <Offers :display-details="displayDetails" :display_details="display_details" :offers="offers"/>
     </div>
 </template>
-<style lang="scss" scoped>
 
-</style>
 <script>
     import {APPID, BASEURL, HTTP_AIR} from './components/http-common';
     import axios from 'axios';
-    import DetailOffer from "./components/DetailOffer";
+    import Offers from "./components/Offers";
 
     export default {
         name: 'app',
-        components: {DetailOffer},
+        components: {Offers},
         data() {
             return {
                 display_details:'none',
