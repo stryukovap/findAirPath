@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <!--<div>{{authApp.etm_auth_key}}</div>-->
         <form autocomplete="off" @submit.prevent="" novalidate
               style="display: flex; flex-direction: column;align-items: stretch;
         margin: 0 auto; width: 50%;">
@@ -19,26 +18,30 @@
             <button v-if="this.authApp.etm_auth_key" @click="postInitSearch">getInitSearch</button>
         </form>
         <ul>
-            <li v-for="(offer, index) in offers.offers" :key="index">
+            <li v-for="(offer, index) in offers.offers" :key="index"
+            @click="displayDetails">
                     <img :src="offer.carrier_logo"
                          alt="carrier logo" width="100">
                 <span>{{offer.carrier_name}}</span>
-                <detailOffer :offer="offer"/>
+                <detailOffer v-bind:style="{display: display_details}" :offer="offer"/>
             </li>
         </ul>
     </div>
 </template>
+<style lang="scss" scoped>
 
+</style>
 <script>
     import {APPID, BASEURL, HTTP_AIR} from './components/http-common';
     import axios from 'axios';
-    import DetailOffer from "./DetailOffer";
+    import DetailOffer from "./components/DetailOffer";
 
     export default {
         name: 'app',
         components: {DetailOffer},
         data() {
             return {
+                display_details:'none',
                 authApp: {
                     etm_auth_key: "string",
                     locale: "string",
@@ -108,7 +111,7 @@
                             min_price: 5320,
                             offers: [
                                 {
-                                    min_price: 53200,
+                                    min_price: 5320,
                                     segments: [
                                         {
                                             segment_id: 881516214,
@@ -161,11 +164,14 @@
             this.getTokenApp()
         },
         methods: {
+            displayDetails: function(){
+                this.display_details = (this.display_details === 'none') ? 'block' : 'none';
+            },
             getTokenApp: function () {
                 axios
                     .get(`${BASEURL}/login/${APPID}`)
                     .then(response => {
-                        window.console.log(response);
+                        // window.console.log(response);
                         this.authApp = response.data;
                         HTTP_AIR.defaults.headers.common['Authorization'] = this.authApp.etm_auth_key;
                     })
@@ -176,7 +182,7 @@
             postInitSearch: function () {
                 HTTP_AIR.post('/search', this.initSearch)
                     .then(response => {
-                        window.console.log(response);
+                        // window.console.log(response);
                         this.searchRequest = response.data;
                         this.getOffers()
                     })
@@ -187,7 +193,7 @@
             getOffers: function () {
                 HTTP_AIR.get(`/offers/${this.searchRequest.request_id}`)
                     .then(response => {
-                        window.console.log(response);
+                        // window.console.log(response);
                         this.offers = response.data;
                     })
                     .catch(error => {
