@@ -3,6 +3,8 @@
 ## Project setup
 ```
 install npm from https://nodejs.org/en/
+clone project
+go to project folder in console
 ```
 ```
 npm install
