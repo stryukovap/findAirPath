@@ -163,7 +163,8 @@
                     .then(response => {
                         // window.console.log(response);
                         this.authApp = response.data;
-                        HTTP_AIR.defaults.headers.common['Authorization'] = this.authApp.etm_auth_key;
+                        HTTP_AIR.defaults.headers.common['Authorization'] =
+                            this.authApp.etm_auth_key;
                     })
                     .catch(error => {
                         window.console.log(error);
