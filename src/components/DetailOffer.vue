@@ -1,10 +1,10 @@
 <template>
     <ul>
-        <li v-for="off in offer.offers" class="detail">
+        <li v-for="(off, index) in offer.offers" class="detail" :key="index">
             <ul>
-                <li v-for="segment in off.segments">
+                <li v-for="(segment, index) in off.segments" :key="index">
                     <ul>
-                        <ul v-for="flightInfo in segment.flights_info">
+                        <ul v-for="(flightInfo, index) in segment.flights_info" :key="index">
                             <li>date departure: {{flightInfo.date}}</li>
                             <li>date arrival: {{calcDateArrival(
                                 flightInfo.date,
