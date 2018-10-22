@@ -9,4 +9,4 @@ app.get(/.*/, function(req, res) {
 
 app.listen(port);
 
-window.console.log("Server started...");
+console.log("Server started...");
