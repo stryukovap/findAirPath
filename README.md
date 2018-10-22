@@ -2,6 +2,9 @@
 
 ## Project setup
 ```
+install npm from https://nodejs.org/en/
+```
+```
 npm install
 ```
 
