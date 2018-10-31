@@ -16,6 +16,7 @@
             <input type="text" name="class" id="class"
                    v-model="this.initSearch.class">
             <button v-if="this.authApp.etm_auth_key" @click="postInitSearch">getInitSearch</button>
+            <button v-if="this.authApp.etm_auth_key" @click="getParamsSearch">getProviders</button>
         </form>
         <Offers :display-details="displayDetails" :display_details="display_details" :offers="offers"/>
     </div>
@@ -161,7 +162,7 @@
                 axios
                     .get(`${BASEURL}/login/${APPID}`)
                     .then(response => {
-                        // window.console.log(response);
+                        window.console.log(response.data);
                         this.authApp = response.data;
                         HTTP_AIR.defaults.headers.common['Authorization'] =
                             this.authApp.etm_auth_key;
@@ -170,10 +171,20 @@
                         window.console.log(error);
                     })
             },
+            getParamsSearch:function(){
+                HTTP_AIR.get('/providers')
+                    .then(response => {
+                        window.console.log(response);
+                        // this.searchRequest = response.data;
+                    })
+                    .catch(error => {
+                        window.console.log(error);
+                    })
+            },
             postInitSearch: function () {
                 HTTP_AIR.post('/search', this.initSearch)
                     .then(response => {
-                        // window.console.log(response);
+                        window.console.log(response.data);
                         this.searchRequest = response.data;
                         this.getOffers()
                     })
