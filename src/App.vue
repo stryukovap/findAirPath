@@ -192,6 +192,7 @@
                     })
                     .catch(error => {
                         window.console.log(error);
+
                     })
             },
             getOffers: function () {
