@@ -164,8 +164,10 @@
                     .then(response => {
                         window.console.log(response.data);
                         this.authApp = response.data;
-                        HTTP_AIR.defaults.headers.common['Authorization'] =
-                            this.authApp.etm_auth_key;
+                        HTTP_AIR.defaults.headers.common["etm_auth_key"] =
+                            `${this.authApp.etm_auth_key}`;
+                        HTTP_AIR.defaults.headers.common['accept'] =
+                            "application/json";
                     })
                     .catch(error => {
                         window.console.log(error);
@@ -193,7 +195,9 @@
                     })
             },
             getOffers: function () {
-                HTTP_AIR.get(`/offers/${this.searchRequest.request_id}`)
+                HTTP_AIR.get(`/offers/${this.searchRequest.request_id}`, {
+                    _method: "GET"
+                })
                     .then(response => {
                         // window.console.log(response);
                         this.offers = response.data;
