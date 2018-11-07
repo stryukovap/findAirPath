@@ -43,8 +43,8 @@
                 initSearch: {
                     directions: [
                         {
-                            departure_code: "MOW",
-                            arrival_code: "LED",
+                            departure_code: "ODS",
+                            arrival_code: "IEV",
                             date: "2018-12-21",
                             time: "M"
                         }
@@ -58,8 +58,8 @@
                     flexible: true,
                     max_price: 50,
                     airlines: [
-                        "SU",
-                        "HR"
+                        //"SU",
+                       // "HR"
                     ],
                     fare_types: [
                         "PUB",
