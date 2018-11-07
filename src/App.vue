@@ -16,14 +16,14 @@
             <input type="text" name="class" id="class"
                    v-model="this.initSearch.class">
             <button v-if="this.authApp.etm_auth_key" @click="postInitSearch">getInitSearch</button>
-            <button v-if="this.authApp.etm_auth_key" @click="getParamsSearch">getProviders</button>
+            <button @click="getOffers">getOffers</button>
         </form>
         <Offers :display-details="displayDetails" :display_details="display_details" :offers="offers"/>
     </div>
 </template>
 
 <script>
-    import {APPID, BASEURL, HTTP_AIR} from './components/http-common';
+    import {APPID, BASEURL, BASEURLAIR, HTTP_AIR} from './components/http-common';
     import axios from 'axios';
     import Offers from "./components/Offers";
 
@@ -159,22 +159,21 @@
                 this.display_details = (this.display_details === 'none') ? 'block' : 'none';
             },
             getTokenApp: function () {
+                // fetch(`${BASEURL}/login/${APPID}`);
                 axios
                     .get(`${BASEURL}/login/${APPID}`)
                     .then(response => {
                         window.console.log(response.data);
                         this.authApp = response.data;
-                        HTTP_AIR.defaults.headers.common["etm_auth_key"] =
+                        HTTP_AIR.defaults.headers.common["etm-auth-key"] =
                             `${this.authApp.etm_auth_key}`;
-                        HTTP_AIR.defaults.headers.common['accept'] =
-                            "application/json";
                     })
                     .catch(error => {
                         window.console.log(error);
                     })
             },
             getParamsSearch:function(){
-                HTTP_AIR.get('/providers')
+                HTTP_AIR.get(`${BASEURLAIR}/providers`)
                     .then(response => {
                         window.console.log(response);
                         // this.searchRequest = response.data;
@@ -188,7 +187,7 @@
                     .then(response => {
                         window.console.log(response.data);
                         this.searchRequest = response.data;
-                        this.getOffers()
+                        // this.getOffers()
                     })
                     .catch(error => {
                         window.console.log(error);
@@ -196,8 +195,8 @@
                     })
             },
             getOffers: function () {
-                HTTP_AIR.get(`/offers/${this.searchRequest.request_id}`, {
-                    _method: "GET"
+                HTTP_AIR.get(`/offers/?request_id=${this.searchRequest.request_id}`, {
+                    // _method: "GET"
                 })
                     .then(response => {
                         // window.console.log(response);
