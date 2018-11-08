@@ -5,13 +5,8 @@
                 <li v-for="(segment, index) in off.segments" :key="index">
                     <ul>
                         <ul v-for="(flightInfo, index) in segment.flights_info" :key="index">
-                            <li>date departure: {{flightInfo.date}}</li>
-                            <li>date arrival: {{calcDateArrival(
-                                flightInfo.date,
-                                flightInfo.departure_local_time,
-                                flightInfo.departure_timezone,
-                                segment.duration_minutes)}}
-                            </li>
+                            <li>date departure: {{flightInfo.departure_date}}</li>
+                            <li>date arrival: {{flightInfo.arrival_date}}</li>
                             <li>departure airport: {{flightInfo.departure_airport}}</li>
                             <li>arrival airport: {{flightInfo.arrival_airport}}</li>
                             <li>duration: {{flightInfo.duration_formated}}</li>
